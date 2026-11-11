@@ -1,0 +1,42 @@
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: cartdemo
+      MYSQL_USER: cartuser
+      MYSQL_PASSWORD: pass
+    # Persist database data
+    volumes:
+      - mysql_data:/var/lib/mysql
+    # Verify database readiness
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=\"$$MYSQL_PASSWORD\" mysql -h 127.0.0.1 -u \"$$MYSQL_USER\" \"$$MYSQL_DATABASE\" -e 'SELECT 1' >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 3s
+      retries: 25
+  app:
+    # Build from local Dockerfile
+    build: .
+    environment:
+      MYSQL_HOST: db
+      MYSQL_USER: cartuser
+      MYSQL_DATABASE: cartdemo
+      MYSQL_PASSWORD: pass
+    # Enable interactive terminal
+    stdin_open: true
+    tty: true
+    # Mount API key securely
+    secrets:
+      - gemini_api_key
+    # Wait for database readiness
+    depends_on:
+      db:
+        condition: service_healthy
+# Read API key from local file
+secrets:
+  gemini_api_key:
+    file: ./GEMINI_API_KEY.txt
+# Persist data across container restarts
+volumes:
+  mysql_data:

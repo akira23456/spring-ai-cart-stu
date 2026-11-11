@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS products (
+  id INT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  price DECIMAL(10,2) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS cart (
+  product_id INT PRIMARY KEY,
+  quantity INT NOT NULL CHECK (quantity BETWEEN 1 AND 99),
+  FOREIGN KEY (product_id) REFERENCES products(id)
+);

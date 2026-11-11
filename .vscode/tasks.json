@@ -1,0 +1,19 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run Shopping Cart (Docker Compose)",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"compose",
+				"run",
+				"--build",
+				"--rm",
+				"app"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}
